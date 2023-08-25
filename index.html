@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Paint</title>
+<style>
+	canvas{
+		border: 1px solid black;
+	}
+</style>
+</head>
+<body>
+
+<canvas id="paintCanvas" width="800" height="600"></canvas>
+<input type="color" id="colorPicker" value="#000000">
+<input type="range" id="brushSize" min="1" max="20" value="5">
+<button id="clearButton">Borrar</button>
+
+<script>
+const canvas = document.getElementById('paintCanvas');
+const context = canvas.getContext('2d');
+const colorPicker = document.getElementById('colorPicker');
+const brushSize = document.getElementById('brushSize');
+const clearButton = document.getElementById('clearButton');
+
+let painting = false;
+
+function startPosition(e) {
+	painting = true;
+	draw(e);
+}
+function endPosition() {
+	painting = false;
+	context.beginPath();
+}
+
+function draw (e){
+	if (!painting) return;
+
+	context.lineWidth = brushSize.value;
+	context.lineCap = 'round';
+	context.strokeStyle = colorPicker.value;
+
+	context.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+	context.stroke();
+	context.beginPath();
+	context.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+}
+function clearCanvas() {
+	context.clearRect(0,0,canvas.width, canvas.height);
+}
+
+canvas.addEventListener('mousedown', startPosition);
+canvas.addEventListener('mouseup', endPosition);
+canvas.addEventListener('mousemove', draw);
+clearButton.addEventListener('click', clearCanvas);
+
+
+
+</script>
+</body>
+</html>
